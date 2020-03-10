@@ -1,0 +1,19 @@
+/* mirador-multi-cropper.css */
+
+.image-view .multi-cropper-controls > a {
+}
+
+.image-view .multi-cropper-controls.active > a {
+  color: yellow;
+  opacity: 1;
+}
+
+.image-view .multi-cropper-controls .multi-cropper-controls-menus {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.image-view .multi-cropper-controls.active .multi-cropper-controls-menus {
+  opacity: 1;
+  visibility: visible;
+}

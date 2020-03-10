@@ -1,0 +1,38 @@
+#rect-selector-overlay {
+  opacity: 0.4;
+  outline: 8px dashed #0A7EbE;
+  background-color: rgba(255,255,255,0.4);
+}
+
+.rect-selector-anno-overlay-center {
+}
+.rect-selector-anno-overlay-upper {
+  transform: translateY(-75%);
+}
+.rect-selector-anno-overlay-lower {
+  transform: translateY(75%);
+}
+.rect-selector-anno-overlay-left {
+  transform: translateX(-75%);
+}
+.rect-selector-anno-overlay-right {
+  transform: translateX(75%);
+}
+
+#rect-selector-anno-overlay > div {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: visible;
+  color: red;
+  font-size: 36px;
+  line-height: 0;
+  white-space: nowrap;
+}
+
+.vertical-rl {
+  -webkit-writing-mode: vertical-rl;
+  -ms-writing-mode: tb-rl;
+  writing-mode: vertical-rl;
+}

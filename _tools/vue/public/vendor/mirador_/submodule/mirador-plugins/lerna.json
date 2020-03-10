@@ -1,0 +1,15 @@
+{
+  "packages": [
+    "CanvasLink",
+    "DownloadMenu",
+    "ImageCropper",
+    "KeyboardNavigation",
+    "ManifestButton",
+    "MultiPageNavigation",
+    "PhysicalRuler",
+    "PiwikTracking",
+    "ShareButtons",
+    "ViewFromUrl"
+  ],
+  "version": "independent"
+}
