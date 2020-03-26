@@ -1,0 +1,114 @@
+basePath: /jikei/api
+definitions:
+  mojiportal.Char:
+    properties:
+      character:
+        type: string
+      creator:
+        type: string
+      delegate:
+        type: boolean
+      id:
+        type: string
+      link:
+        type: string
+      manifest_url:
+        type: string
+      rights:
+        type: string
+      rights_url:
+        type: string
+      source:
+        $ref: '#/definitions/mojiportal.Source'
+        type: object
+      subject:
+        type: string
+      thumbnail_url:
+        type: string
+      unicode:
+        type: string
+    type: object
+  mojiportal.ErrorItem:
+    properties:
+      key:
+        type: string
+      message:
+        type: string
+    type: object
+  mojiportal.ErrorResponse:
+    properties:
+      error:
+        items:
+          $ref: '#/definitions/mojiportal.ErrorItem'
+        type: array
+    type: object
+  mojiportal.List:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/mojiportal.Char'
+        type: array
+      search_results:
+        type: integer
+    type: object
+  mojiportal.Source:
+    properties:
+      bid:
+        type: string
+      frame:
+        type: integer
+      label:
+        type: string
+      side:
+        type: string
+      title:
+        type: string
+    type: object
+host: lab.nijl.ac.jp
+info:
+  contact: {}
+  license:
+    name: MIT
+  title: 国文研字形検索βAPI
+  version: 0.0.1
+paths:
+  /char/search:
+    get:
+      description: get a character list from a character
+      parameters:
+      - description: a single character
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: 'default: 0'
+        in: query
+        name: offset
+        type: integer
+      - description: 'default: 10; ''0'' means default; ''-1'' means no limitation'
+        in: query
+        name: limit
+        type: integer
+      - description: if 'true', pick up a single character for each title
+        in: query
+        name: delegate
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mojiportal.List'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/mojiportal.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/mojiportal.ErrorResponse'
+      summary: search a character
+schemes:
+- https
+swagger: "2.0"

@@ -7,6 +7,8 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
+/* routing */
+
 /* struct for mojiportal search query */
 
 // CharSearchParam - char search parameter

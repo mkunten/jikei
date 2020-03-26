@@ -5,9 +5,9 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 
 	_ "github.com/mkunten/jikei/docs"
-	"github.com/swaggo/echo-swagger"
 )
 
 // Router - echo routing

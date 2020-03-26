@@ -1,6 +1,19 @@
 package iiif
 
-/* struct for IIIF manifest files */
+/* struct */
+
+// IIIF - iiif struct with settings
+type IIIF struct {
+	IAPIBase string
+	PAPIBase string
+	RootDir  string
+}
+
+// ManifestOptions - IIIF Manifest constructor options
+type ManifestOptions struct {
+	Prefix string
+	Chars  string
+}
 
 // Manifest - IIIF Manifest
 type Manifest struct {
@@ -19,6 +32,7 @@ type Manifest struct {
 	Related          []IDFormat  `json:"related,omitempty"`
 	Within           string      `json:"within,omitempty"`
 	Sequences        []Sequence  `json:"sequences,omitempty"`
+	Structures       []Structure `json:"structures,omitempty"`
 }
 
 // Metadatum - IIIF Manifest Metadata
@@ -83,6 +97,22 @@ type OtherContent struct {
 	Type string `json:"type"`
 }
 
+// Structure - IIIF Manifest Structure
+type Structure struct {
+	ID          string   `json:"@id"`
+	Type        string   `json:"@type"`
+	Label       string   `json:"label"`
+	ViewingHint string   `json:"viewingHint,omitempty"`
+	Members     []Member `json:"members"`
+}
+
+// Member - IIIF Manifest Member
+type Member struct {
+	ID    string `json:"@id"`
+	Type  string `json:"@type"`
+	Label string `json:"label"`
+}
+
 /* struct for annotation list */
 
 // AnnoList - anno list
@@ -111,28 +141,104 @@ type AnnoResource struct {
 	Chars  string `json:"chars"`
 }
 
-// AnnoOn -anno on
-// type AnnoOn struct {
-// 	Type     string       `json:"@type"`
-// 	Full     string       `json:"full"`
-// 	Selector AnnoSelector `json:"selector"`
-// }
-//
-// // AnnoSelector - anno selector
-// type AnnoSelector struct {
-// 	Type    string      `json:"@type"`
-// 	Default AnnoDefault `json:"default"`
-// 	Item    AnnoItem    `json:"item,omitempty"`
-// }
-//
-// // AnnoDefault - anno default
-// type AnnoDefault struct {
-// 	Type  string `json:"@type"`
-// 	Value string `json:"value"`
-// }
-//
-// // AnnoItem - anno item
-// type AnnoItem struct {
-// 	Type  string `json:"@type"`
-// 	Value string `json:"value"`
-// }
+/* interface */
+
+// Target - target
+type Target interface {
+	GetID() string
+	GetIIIFImageID() string
+}
+
+/* constructor */
+
+// NewIIIF - IIIF constructor
+func NewIIIF(i, p, r string) IIIF {
+	return IIIF{
+		IAPIBase: i,
+		PAPIBase: p,
+		RootDir:  r,
+	}
+}
+
+/* method */
+
+// GetManifest - get manifest file from targets
+func (iiif *IIIF) GetManifest(targets []Target, opts *ManifestOptions) {
+	canvases := make([]iiif.Canvas, 0, len(targets))
+	chars := opts.Chars
+	for _, target := range targets {
+		id := target.GetID()
+		var canvas string
+		var otherContents []iiif.OtherContent
+		if chars == "" {
+			canvas = target.GetCanvasID(iiif, "c1")
+		} else {
+			canvas = target.GetCanvasIDWithChars(iiif, "c1", chars)
+			otherContents = append(otherContents, iiif.OtherContent{
+				ID:   canvas + "/annolist",
+				Type: "sc:AnnotationList",
+			})
+		}
+
+		jpg := target.GetIIIFImageID()
+
+		canvases = append(canvases, iiif.Canvas{
+			ID:     canvas,
+			Type:   "sc:Canvas",
+			Label:  target.GetLabel(),
+			Width:  target.Width,
+			Height: target.Height,
+			Images: []iiif.Image{
+				iiif.Image{
+					ID:         canvas + "/annotion/anno1",
+					Type:       "oa:Annotation",
+					Motivation: "sc:painting",
+					Resource: iiif.Resource{
+						ID:     jpg + "/full/full/0/default.jpg",
+						Type:   "dctypes:Image",
+						Format: "image/jpeg",
+						Width:  target.Width,
+						Height: target.Height,
+						Service: iiif.Service{
+							Context: "http://iiif.io/api/image/2/context.json",
+							ID:      jpg,
+							Profile: "http://iiif.io/api/image/2/level1.json",
+						},
+					},
+					On: canvas,
+				},
+			},
+			OtherContent: otherContents,
+		})
+	}
+
+	manifest := iiif.Manifest{
+		Context: "http://iiif.io/api/presentation/2/context.json",
+		ID: fmt.Sprintf("%s/api/manifest?q=%s",
+			iiif.IAPIBase, url.QueryEscape(chars)),
+		Type:             "sc:Manifest",
+		Label:            chars,
+		ViewingHint:      "paged",
+		ViewingDirection: "right-to-left",
+		License:          opts.License,
+		Attribution:      opts.Attribution,
+		Logo:             iiif.IAPIBase + "/img/nijl_symbolmark.jpg",
+		Related: []iiif.IDFormat{
+			iiif.IDFormat{
+				ID:     "https://kotenseki.nijl.ac.jp/",
+				Format: "text/html",
+			},
+		},
+		Within: iiif.IAPIBase + "/",
+		Sequences: []iiif.Sequence{
+			iiif.Sequence{
+				ID: fmt.Sprintf("%s/api/sequence?q=%s",
+					iiif.IAPIBase, url.QueryEscape(chars)),
+				Type:     "sc:Sequence",
+				Canvases: canvases,
+			},
+		},
+	}
+
+	return manifest
+}

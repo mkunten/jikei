@@ -1,0 +1,174 @@
+{
+    "schemes": [
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "title": "国文研字形検索βAPI",
+        "contact": {},
+        "license": {
+            "name": "MIT"
+        },
+        "version": "0.0.1"
+    },
+    "host": "lab.nijl.ac.jp",
+    "basePath": "/jikei/api",
+    "paths": {
+        "/char/search": {
+            "get": {
+                "description": "get a character list from a character",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "search a character",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "a single character",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "default: 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "default: 10; '0' means default; '-1' means no limitation",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "if 'true', pick up a single character for each title",
+                        "name": "delegate",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/mojiportal.List"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/mojiportal.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/mojiportal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "mojiportal.Char": {
+            "type": "object",
+            "properties": {
+                "character": {
+                    "type": "string"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "delegate": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "manifest_url": {
+                    "type": "string"
+                },
+                "rights": {
+                    "type": "string"
+                },
+                "rights_url": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "object",
+                    "$ref": "#/definitions/mojiportal.Source"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "thumbnail_url": {
+                    "type": "string"
+                },
+                "unicode": {
+                    "type": "string"
+                }
+            }
+        },
+        "mojiportal.ErrorItem": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "mojiportal.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/mojiportal.ErrorItem"
+                    }
+                }
+            }
+        },
+        "mojiportal.List": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/mojiportal.Char"
+                    }
+                },
+                "search_results": {
+                    "type": "integer"
+                }
+            }
+        },
+        "mojiportal.Source": {
+            "type": "object",
+            "properties": {
+                "bid": {
+                    "type": "string"
+                },
+                "frame": {
+                    "type": "integer"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "side": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
