@@ -33,6 +33,7 @@
         dense
         clearable
         prepend-inner-icon="mdi-magnify"
+        placeholder="検索したい文字を入力してください"
         v-on:keypress.enter="onPrepareSearch"
         v-on:keyup.enter="onSearch"
         ></v-text-field>
