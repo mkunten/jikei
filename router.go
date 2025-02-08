@@ -5,15 +5,14 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-
-	_ "github.com/mkunten/jikei/docs"
-	"github.com/swaggo/echo-swagger"
+	// _ "github.com/mkunten/jikei/docs"
+	// "github.com/swaggo/echo-swagger"
 )
 
 // Router - echo routing
 func Router(e *echo.Echo) {
-	// swaggo
-	e.GET("/jikei/api/docs/*", echoSwagger.WrapHandler)
+	// // swaggo
+	// e.GET("/jikei/api/docs/*", echoSwagger.WrapHandler)
 
 	// groups
 	api := e.Group("/jikei/api")
