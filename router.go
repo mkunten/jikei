@@ -3,21 +3,21 @@ package main
 import (
 	"net/http"
 
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-	// _ "github.com/mkunten/jikei/docs"
-	// "github.com/swaggo/echo-swagger"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/mkunten/jikei/docs"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 // Router - echo routing
 func Router(e *echo.Echo) {
-	// // swaggo
-	// e.GET("/jikei/api/docs/*", echoSwagger.WrapHandler)
-
 	// groups
 	api := e.Group("/jikei/api")
 	api.Use(middleware.Gzip())
 	admin := api.Group("/admin")
+
+	// swaggo
+	api.GET("/docs/*", echoSwagger.WrapHandler)
 
 	// for ordinal user
 	api.GET("/jikeis", func(c echo.Context) error {
